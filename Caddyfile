@@ -1,0 +1,21 @@
+{
+    email magnus@froste.eu
+    on_demand_tls {
+        ask http://portal:3000/api/verify-domain
+    }
+}
+
+:80 {
+    reverse_proxy portal:3000
+}
+
+:443 {
+    tls {
+        on_demand
+    }
+    reverse_proxy portal:3000
+}
+
+clawstack.froste.eu {
+    reverse_proxy portal:3000
+}

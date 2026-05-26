@@ -1,0 +1,58 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      - CADDY_EMAIL=${CADDY_EMAIL}
+      - BASE_DOMAIN=${BASE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - clawstack
+    mem_limit: 128m
+    logging: *default-logging
+
+  portal:
+    build: ./portal
+    restart: unless-stopped
+    environment:
+      - ADMIN_USER=${ADMIN_USER:-admin}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - BASE_DOMAIN=${BASE_DOMAIN}
+      - OPENCLAW_IMAGE=${OPENCLAW_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+      - TZ=${TZ:-Europe/Stockholm}
+      - INSTANCES_HOST_DIR=${INSTANCES_HOST_DIR:-.}/instances
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portal_data:/data
+      - ${INSTANCES_HOST_DIR}:/instances
+      - ${INSTANCES_HOST_DIR}:/opt/clawstack/instances
+      - .:/clawstack-config
+      - ./portal/public:/app/public
+      - ./portal/lib:/app/lib
+      - ./portal/routes:/app/routes
+    networks:
+      - clawstack
+    mem_limit: 256m
+    logging: *default-logging
+
+volumes:
+  caddy_data:
+  caddy_config:
+  portal_data:
+
+networks:
+  clawstack:
+    name: clawstack
