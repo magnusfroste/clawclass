@@ -1,5 +1,12 @@
 # ClawStack
 
+> **Open-source Docker stack for multi-tenant OpenClaw hosting.** We're building the definitive infrastructure layer for running OpenClaw agents at scale — and we need your help to make it great.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/magnusfroste/clawstack)](https://github.com/magnusfroste/clawstack/issues)
+[![Discussions](https://img.shields.io/badge/Discussions-welcome-blue)](https://github.com/magnusfroste/clawstack/discussions)
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](#contributing)
+
 The internet was the first acceleration. Generative AI was the second. Agentic autonomy is the third.
 
 [OpenClaw](https://openclaw.dev) puts a persistent, tool-using AI agent in the hands of anyone — browsing the web, writing code, managing files, and acting on your behalf around the clock. ClawStack is the missing infrastructure layer above it.
@@ -9,6 +16,10 @@ The internet was the first acceleration. Generative AI was the second. Agentic a
 **Vision**: ClawStack becomes the **agent simulation and testing platform**. Spawn populations of OpenClaw personas — a visitor, an accountant, a salesperson, a support lead — point them at a SaaS, let them act for hours or days, and let a senior operator-agent observe what emerges. The deliverable is an *Emergent Findings Report*: cross-module risks, UX gaps, broken chains that no human tester would have produced, surfaced by agents observing agents. OpenClaw's persona depth (SOUL + HEARTBEAT + memory) makes it the only framework today that does this convincingly. ClawStack is the substrate that makes it shippable.
 
 The hosting product and the simulation product share the same multi-OpenClaw substrate. Different UIs and contracts on top.
+
+---
+
+**This project is open source and community-driven.** If you run OpenClaw on a VPS, in production, or at scale — your experience matters. We want ClawStack to become *the* Docker stack that the OpenClaw community relies on. That means we need your feedback, bug reports, feature ideas, and code contributions. See [Contributing](#contributing) below.
 
 ## The problem
 
@@ -145,6 +156,37 @@ For details on the OpenClaw A2A gateway plugin — what it supports, how it rout
 - **ClawStack portal** — Node.js, SQLite, Dockerode
 - **OpenClaw** — official image from ghcr.io/openclaw/openclaw
 - **OpenClaw A2A gateway** — optional plugin for agent-to-agent communication
+
+## Contributing
+
+ClawStack is open source and we want it to become **the definitive Docker stack for OpenClaw** — the one that the community builds, maintains, and trusts. Whether you run a single agent on a $5 VPS or manage a fleet of dozens, your experience is valuable.
+
+### Ways to contribute
+
+- **Report bugs** — Found something broken? [Open an issue](https://github.com/magnusfroste/clawstack/issues) with details about your setup and what happened.
+- **Request features** — Have an idea for a role preset, swarm template, or portal improvement? [Start a discussion](https://github.com/magnusfroste/clawstack/discussions) or open an issue.
+- **Improve docs** — Documentation is never done. Typos, missing steps, unclear explanations — all welcome fixes.
+- **Add role presets** — Built a useful agent configuration? Contribute it as a preset so others can use it.
+- **Share swarm templates** — Composed a working multi-agent setup? We'd love to include it.
+- **Test on different environments** — Different VPS providers, OS versions, Docker configurations — the more testing, the more robust ClawStack becomes.
+
+### How to contribute
+
+1. **Fork** the repository
+2. **Create a branch** for your change
+3. **Make your changes** — code, docs, or config
+4. **Test** locally with `docker compose up -d`
+5. **Open a pull request** — describe what you changed and why
+
+No contribution is too small. A typo fix in docs is as valuable as a new feature.
+
+### Good first issues
+
+Look for the [`good first issue`](https://github.com/magnusfroste/clawstack/labels/good%20first%20issue) label for beginner-friendly tasks to get started with.
+
+### License
+
+By contributing to ClawStack, you agree that your contributions will be licensed under the MIT License.
 
 ## License
 
