@@ -1,13 +1,13 @@
 # Dual-Channel Communication
 
-Every A2A-enabled OpenClaw instance in ClawStack exposes two communication channels. They serve different coordination patterns and should not be treated as interchangeable.
+Every A2A-enabled OpenClaw instance in ClawClass exposes two communication channels. They serve different coordination patterns and should not be treated as interchangeable.
 
 ## The two channels
 
 ### Channel 1 — OpenResponses (`POST /v1/responses`)
 
 **Port:** 18789 (same as the UI)
-**Auth:** `x-openclaw-token` header (the gateway token shown on the instance card in ClawStack portal)
+**Auth:** `x-openclaw-token` header (the gateway token shown on the instance card in ClawClass portal)
 **Format:** OpenAI Responses API-compatible
 **Pattern:** Top-down. The caller is the orchestrator, Claw is the worker.
 
@@ -56,7 +56,7 @@ Claw A ←→ Claw B
 
 ## Shared infrastructure
 
-Both channels use the same per-instance credentials managed by ClawStack:
+Both channels use the same per-instance credentials managed by ClawClass:
 
 | Credential | Where it lives | Used by |
 |---|---|---|
@@ -64,7 +64,7 @@ Both channels use the same per-instance credentials managed by ClawStack:
 | A2A bearer token | `openclaw.json` security section | A2A inbound auth |
 | Instance domain | SQLite `instances.domain` | Both channels |
 
-ClawStack's reverse proxy routes traffic automatically:
+ClawClass's reverse proxy routes traffic automatically:
 - `/a2a/*` and `/.well-known/agent.json` → port 18800 (A2A)
 - Everything else → port 18789 (UI + OpenResponses)
 

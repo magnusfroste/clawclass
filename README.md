@@ -1,4 +1,4 @@
-# ClawStack
+# ClawClass
 
 > **Open-source Docker stack for multi-tenant OpenClaw hosting.** We're building the definitive infrastructure layer for running OpenClaw agents at scale — and we need your help to make it great.
 
@@ -8,22 +8,22 @@
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](#contributing)
 
 <p align="center">
-  <img src="docs/clawstack-architecture.png" alt="ClawStack Architecture" width="100%" />
+  <img src="docs/clawstack-architecture.png" alt="ClawClass Architecture" width="100%" />
 </p>
 
 The internet was the first acceleration. Generative AI was the second. Agentic autonomy is the third.
 
-[OpenClaw](https://openclaw.dev) puts a persistent, tool-using AI agent in the hands of anyone — browsing the web, writing code, managing files, and acting on your behalf around the clock. ClawStack is the missing infrastructure layer above it.
+[OpenClaw](https://openclaw.dev) puts a persistent, tool-using AI agent in the hands of anyone — browsing the web, writing code, managing files, and acting on your behalf around the clock. ClawClass is the missing infrastructure layer above it.
 
-**Today**, ClawStack hosts a swarm of OpenClaw instances on your own hardware — each with its own domain, HTTPS, and full isolation, plus role presets and A2A peering so a swarm is as easy to launch as a single agent. One server, unlimited agents.
+**Today**, ClawClass hosts a swarm of OpenClaw instances on your own hardware — each with its own domain, HTTPS, and full isolation, plus role presets and A2A peering so a swarm is as easy to launch as a single agent. One server, unlimited agents.
 
-**Vision**: ClawStack becomes the **agent simulation and testing platform**. Spawn populations of OpenClaw personas — a visitor, an accountant, a salesperson, a support lead — point them at a SaaS, let them act for hours or days, and let a senior operator-agent observe what emerges. The deliverable is an *Emergent Findings Report*: cross-module risks, UX gaps, broken chains that no human tester would have produced, surfaced by agents observing agents. OpenClaw's persona depth (SOUL + HEARTBEAT + memory) makes it the only framework today that does this convincingly. ClawStack is the substrate that makes it shippable.
+**Vision**: ClawClass becomes the **agent simulation and testing platform**. Spawn populations of OpenClaw personas — a visitor, an accountant, a salesperson, a support lead — point them at a SaaS, let them act for hours or days, and let a senior operator-agent observe what emerges. The deliverable is an *Emergent Findings Report*: cross-module risks, UX gaps, broken chains that no human tester would have produced, surfaced by agents observing agents. OpenClaw's persona depth (SOUL + HEARTBEAT + memory) makes it the only framework today that does this convincingly. ClawClass is the substrate that makes it shippable.
 
 The hosting product and the simulation product share the same multi-OpenClaw substrate. Different UIs and contracts on top.
 
 ---
 
-**This project is open source and community-driven.** If you run OpenClaw on a VPS, in production, or at scale — your experience matters. We want ClawStack to become *the* Docker stack that the OpenClaw community relies on. That means we need your feedback, bug reports, feature ideas, and code contributions. See [Contributing](#contributing) below.
+**This project is open source and community-driven.** If you run OpenClaw on a VPS, in production, or at scale — your experience matters. We want ClawClass to become *the* Docker stack that the OpenClaw community relies on. That means we need your feedback, bug reports, feature ideas, and code contributions. See [Contributing](#contributing) below.
 
 ## The problem
 
@@ -33,9 +33,9 @@ OpenClaw ships as a blank slate. After the container starts, you face a collecti
 
 Beyond the single-agent problem: running multiple agents that collaborate requires manually configuring A2A tokens, peer lists, and Agent Cards for each instance. There is no tooling for it.
 
-## What ClawStack does
+## What ClawClass does
 
-ClawStack removes both barriers.
+ClawClass removes both barriers.
 
 **The infrastructure barrier** — domains, HTTPS, container lifecycle, API key management — is handled automatically. Fill in a form, click Create, done. Each agent gets its own domain with automatic TLS, isolated from every other instance on the same server.
 
@@ -43,9 +43,9 @@ ClawStack removes both barriers.
 
 **The swarm barrier** — A2A is built into the proxy layer. Every A2A-enabled instance is immediately reachable and discoverable over HTTPS. Swarm templates will wire multiple agents together with pre-configured peering, so a team of collaborating agents is as easy to spin up as a single one.
 
-Under the hood, ClawStack runs a smart reverse proxy (Caddy) that makes custom domains trivially easy. Each agent gets its own domain or subdomain — `ai.yourclient.com`, `jarvis.yourcompany.com`, whatever you like. Just point a CNAME at your ClawStack server and the proxy handles the rest: TLS certificates are issued automatically on first request, no configuration needed. No wildcard certs, no manual cert management, no nginx reloads.
+Under the hood, ClawClass runs a smart reverse proxy (Caddy) that makes custom domains trivially easy. Each agent gets its own domain or subdomain — `ai.yourclient.com`, `jarvis.yourcompany.com`, whatever you like. Just point a CNAME at your ClawClass server and the proxy handles the rest: TLS certificates are issued automatically on first request, no configuration needed. No wildcard certs, no manual cert management, no nginx reloads.
 
-And because ClawStack pulls directly from the official OpenClaw image, you're always running the latest release — not a snapshot baked into a platform template two months ago. EasyPanel, Fly.io, Railway and friends are great, but their OpenClaw integrations lag behind. ClawStack is effectively a local installation with multi-container tenancy: full control, zero platform lag.
+And because ClawClass pulls directly from the official OpenClaw image, you're always running the latest release — not a snapshot baked into a platform template two months ago. EasyPanel, Fly.io, Railway and friends are great, but their OpenClaw integrations lag behind. ClawClass is effectively a local installation with multi-container tenancy: full control, zero platform lag.
 
 ## Prerequisites
 
@@ -87,7 +87,7 @@ Open `https://clawstack.yourdomain.com` and log in.
 1. Enter a name and the customer's domain
 2. Click **Create**
 3. Customer adds DNS: `ai.customer.com CNAME clawstack.yourdomain.com`
-4. ClawStack starts the container, HTTPS provisions automatically on first visit
+4. ClawClass starts the container, HTTPS provisions automatically on first visit
 
 ## How it works
 
@@ -96,14 +96,14 @@ Customer visits https://ai.customer.com
         ↓
 Caddy (on-demand TLS — cert issued on first request)
         ↓
-ClawStack portal (routes by hostname → container)
+ClawClass portal (routes by hostname → container)
         ↓
 OpenClaw container (internal Docker network)
 ```
 
 ## Agent roles
 
-OpenClaw is a powerful but horizontal tool — it does not arrive with a purpose. ClawStack ships opinionated **role presets** that configure each instance for a specific job from the start. Pick a role at creation time and the instance boots ready to work.
+OpenClaw is a powerful but horizontal tool — it does not arrive with a purpose. ClawClass ships opinionated **role presets** that configure each instance for a specific job from the start. Pick a role at creation time and the instance boots ready to work.
 
 | Role | What it does | Heartbeat |
 |------|-------------|-----------|
@@ -125,7 +125,7 @@ See [docs/AUTONOMOUS-OPERATORS.md](docs/AUTONOMOUS-OPERATORS.md) for the full ar
 
 Each instance can optionally run the [OpenClaw A2A gateway plugin](https://github.com/win4r/openclaw-a2a-gateway). Enable it via the **Enable A2A** checkbox when creating an instance.
 
-When A2A is enabled, ClawStack automatically:
+When A2A is enabled, ClawClass automatically:
 - Starts the A2A gateway on internal port **18800**
 - Routes `/a2a/*` and `/.well-known/agent.json` to that port (other traffic stays on 18789)
 - Publishes an **Agent Card** at `https://your-instance-domain/.well-known/agent.json` so peers can discover the agent's capabilities
@@ -134,7 +134,7 @@ This means every A2A-enabled Claw in your swarm is immediately reachable and dis
 
 ### Communication model
 
-ClawStack follows a **caller-defines-the-contract** model, inspired by how tools like Claude Code, Kilo, Roo, and Cline request strict structured output from LLMs:
+ClawClass follows a **caller-defines-the-contract** model, inspired by how tools like Claude Code, Kilo, Roo, and Cline request strict structured output from LLMs:
 
 > The sender specifies what it wants and in what format. The receiver either delivers — or declines.
 
@@ -152,18 +152,18 @@ For details on the OpenClaw A2A gateway plugin — what it supports, how it rout
 
 ### Reference implementation
 
-[FlowWink / FlowPilot](https://github.com/magnusfroste/flowwink) is the reference A2A peer used during development of ClawStack's A2A infrastructure. It implements the full dual-mode model (structured skill execution + conversational chat) and serves as a benchmark for what a well-behaved A2A peer looks like.
+[FlowWink / FlowPilot](https://github.com/magnusfroste/flowwink) is the reference A2A peer used during development of ClawClass's A2A infrastructure. It implements the full dual-mode model (structured skill execution + conversational chat) and serves as a benchmark for what a well-behaved A2A peer looks like.
 
 ## Tech stack
 
 - **Caddy** — reverse proxy, automatic HTTPS via Let's Encrypt
-- **ClawStack portal** — Node.js, SQLite, Dockerode
+- **ClawClass portal** — Node.js, SQLite, Dockerode
 - **OpenClaw** — official image from ghcr.io/openclaw/openclaw
 - **OpenClaw A2A gateway** — optional plugin for agent-to-agent communication
 
 ## Contributing
 
-ClawStack is open source and we want it to become **the definitive Docker stack for OpenClaw** — the one that the community builds, maintains, and trusts. Whether you run a single agent on a $5 VPS or manage a fleet of dozens, your experience is valuable.
+ClawClass is open source and we want it to become **the definitive Docker stack for OpenClaw** — the one that the community builds, maintains, and trusts. Whether you run a single agent on a $5 VPS or manage a fleet of dozens, your experience is valuable.
 
 ### Ways to contribute
 
@@ -172,7 +172,7 @@ ClawStack is open source and we want it to become **the definitive Docker stack 
 - **Improve docs** — Documentation is never done. Typos, missing steps, unclear explanations — all welcome fixes.
 - **Add role presets** — Built a useful agent configuration? Contribute it as a preset so others can use it.
 - **Share swarm templates** — Composed a working multi-agent setup? We'd love to include it.
-- **Test on different environments** — Different VPS providers, OS versions, Docker configurations — the more testing, the more robust ClawStack becomes.
+- **Test on different environments** — Different VPS providers, OS versions, Docker configurations — the more testing, the more robust ClawClass becomes.
 
 ### How to contribute
 
@@ -190,7 +190,7 @@ Look for the [`good first issue`](https://github.com/magnusfroste/clawstack/labe
 
 ### License
 
-By contributing to ClawStack, you agree that your contributions will be licensed under the MIT License.
+By contributing to ClawClass, you agree that your contributions will be licensed under the MIT License.
 
 ## License
 

@@ -1,6 +1,6 @@
-# ClawStack Docs
+# ClawClass Docs
 
-Technical platform documentation for ClawStack.
+Technical platform documentation for ClawClass.
 
 ## What lives here
 
@@ -16,4 +16,4 @@ documentation live in the clawable research repo:
 
 **https://github.com/magnusfroste/clawable/tree/main/research/clawstack**
 
-This directory is for ClawStack platform documentation only.
+This directory is for ClawClass platform documentation only.

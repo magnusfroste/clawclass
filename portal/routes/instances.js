@@ -209,7 +209,7 @@ function register(app) {
     const row = db.prepare('SELECT id, token, container_name FROM instances WHERE name = ?').get(req.params.name);
     if (!row) return res.status(404).json({ error: 'not found' });
     if (!checkAuth(req, row.token)) {
-      res.set('WWW-Authenticate', 'Basic realm="ClawStack"');
+      res.set('WWW-Authenticate', 'Basic realm="ClawClass"');
       return res.status(401).json({ error: 'Unauthorized' });
     }
     try {
@@ -234,7 +234,7 @@ function register(app) {
     const row = db.prepare('SELECT id, token, container_name FROM instances WHERE name = ?').get(req.params.name);
     if (!row) return res.status(404).json({ error: 'not found' });
     if (!checkAuth(req, row.token)) {
-      res.set('WWW-Authenticate', 'Basic realm="ClawStack"');
+      res.set('WWW-Authenticate', 'Basic realm="ClawClass"');
       return res.status(401).json({ error: 'Unauthorized' });
     }
     const { path: filePath, content } = req.body;

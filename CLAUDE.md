@@ -25,7 +25,7 @@ There are no tests and no lint scripts.
 
 ## Architecture
 
-ClawStack is a multi-tenant OpenClaw hosting platform. The entry point for all traffic is **Caddy**, which uses on-demand TLS to issue certificates automatically for any domain that the portal confirms is registered (`GET /api/verify-domain`).
+ClawClass is a multi-tenant OpenClaw hosting platform. The entry point for all traffic is **Caddy**, which uses on-demand TLS to issue certificates automatically for any domain that the portal confirms is registered (`GET /api/verify-domain`).
 
 **Request flow:**
 ```

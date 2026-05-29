@@ -85,6 +85,6 @@ server.on('upgrade', (req, socket, head) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`ClawStack portal listening on :${PORT}`);
+  console.log(`ClawClass portal listening on :${PORT}`);
   deviceWatcher.start();
 });

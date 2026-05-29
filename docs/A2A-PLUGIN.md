@@ -1,12 +1,12 @@
 # OpenClaw A2A Gateway Plugin
 
-ClawStack's A2A support depends on the [openclaw-a2a-gateway](https://github.com/win4r/openclaw-a2a-gateway) plugin. This document describes what the plugin does, how ClawStack uses it, and its current capabilities and limitations.
+ClawClass's A2A support depends on the [openclaw-a2a-gateway](https://github.com/win4r/openclaw-a2a-gateway) plugin. This document describes what the plugin does, how ClawClass uses it, and its current capabilities and limitations.
 
 ## What it is
 
 The A2A gateway is an OpenClaw plugin (v1.2.0) that exposes a JSON-RPC endpoint on port 18800. It enables an OpenClaw instance to participate in the A2A (Agent-to-Agent) protocol: it can receive tasks from external peers, route them to the internal OpenClaw agent, and return responses.
 
-When ClawStack creates an instance with A2A enabled, it writes the following into `openclaw.json`:
+When ClawClass creates an instance with A2A enabled, it writes the following into `openclaw.json`:
 
 ```json
 {
@@ -25,7 +25,7 @@ When ClawStack creates an instance with A2A enabled, it writes the following int
 }
 ```
 
-ClawStack's reverse proxy automatically routes all `/a2a/*` and `/.well-known/agent.json` requests to port 18800, so the gateway is reachable over HTTPS without any additional configuration.
+ClawClass's reverse proxy automatically routes all `/a2a/*` and `/.well-known/agent.json` requests to port 18800, so the gateway is reachable over HTTPS without any additional configuration.
 
 ## What it supports
 
@@ -72,18 +72,18 @@ This means the plugin operates as a **conversational bridge**, not a skill-execu
 **No responseSchema enforcement**
 The gateway has no mechanism to validate or coerce the LLM's response against a caller-provided schema. The LLM may follow the schema if it understands the instruction, but this is not guaranteed.
 
-**Security config not set by ClawStack bootstrap**
-The bearer token for inbound auth (`security.inboundAuth`, `security.token`) and the peer list (`peers`) are not written by ClawStack's bootstrap function. These must be configured manually in each instance's `openclaw.json` after creation if you want authenticated peer-to-peer communication. Without this, inbound requests without a token may still be accepted, and peers are not pre-configured.
+**Security config not set by ClawClass bootstrap**
+The bearer token for inbound auth (`security.inboundAuth`, `security.token`) and the peer list (`peers`) are not written by ClawClass's bootstrap function. These must be configured manually in each instance's `openclaw.json` after creation if you want authenticated peer-to-peer communication. Without this, inbound requests without a token may still be accepted, and peers are not pre-configured.
 
 **Peer discovery is manual**
-Claws in a swarm do not automatically know about each other. Each instance must have its peers listed in the `config.peers` array. Automated swarm-level peer discovery is not yet implemented in ClawStack.
+Claws in a swarm do not automatically know about each other. Each instance must have its peers listed in the `config.peers` array. Automated swarm-level peer discovery is not yet implemented in ClawClass.
 
 **Static Agent Card**
 The Agent Card is generated from the `agentCard` config in `openclaw.json`. Skills listed in the card are specified manually — there is no dynamic reflection of what the underlying agent can actually do.
 
 ## Manual configuration after creation
 
-To enable authenticated A2A and add peers, edit the instance's `openclaw.json` via the ClawStack file browser (Files button on the instance card), or via the terminal:
+To enable authenticated A2A and add peers, edit the instance's `openclaw.json` via the ClawClass file browser (Files button on the instance card), or via the terminal:
 
 ```json
 "a2a-gateway": {
@@ -121,4 +121,4 @@ Restart the instance after editing for changes to take effect.
 
 Source code and full documentation: [https://github.com/win4r/openclaw-a2a-gateway](https://github.com/win4r/openclaw-a2a-gateway)
 
-Issues with the plugin's behavior (routing, auth, task lifecycle) should be reported to that repository. Issues with how ClawStack configures or proxies the plugin should be reported to the ClawStack repository.
+Issues with the plugin's behavior (routing, auth, task lifecycle) should be reported to that repository. Issues with how ClawClass configures or proxies the plugin should be reported to the ClawClass repository.

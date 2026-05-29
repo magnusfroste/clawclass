@@ -1,6 +1,6 @@
 # A2A Communication Model
 
-This document describes the agent-to-agent communication model used in ClawStack and the reasoning behind design decisions. It is intended for developers integrating A2A peers or extending the swarm.
+This document describes the agent-to-agent communication model used in ClawClass and the reasoning behind design decisions. It is intended for developers integrating A2A peers or extending the swarm.
 
 ## Core principle: Caller defines the contract
 
@@ -55,7 +55,7 @@ The A2A community has not yet settled on how structured contracts should be form
 
 Google's A2A specification (as of early 2026) does not mandate either approach. Both are valid depending on the trust relationship between peers.
 
-ClawStack takes no dogmatic position. The infrastructure supports both:
+ClawClass takes no dogmatic position. The infrastructure supports both:
 - Agent Cards expose skills with schemas for peers that prefer server-driven discovery
 - Inbound messages accept a `responseSchema` field for peers that prefer caller-driven contracts
 - Plain chat messages work as a fallback with no schema on either side
@@ -107,4 +107,4 @@ The current constraint is that peer configuration (who knows about whom) must be
 - Auto-detection of peer protocol (JSON-RPC 2.0, native, legacy)
 - Six-path Agent Card discovery fallback
 
-FlowPilot serves as the reference A2A peer for ClawStack development and testing.
+FlowPilot serves as the reference A2A peer for ClawClass development and testing.

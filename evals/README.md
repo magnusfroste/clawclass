@@ -1,6 +1,6 @@
-# ClawStack Evals
+# ClawClass Evals
 
-ClawStack owns all simulation definitions and eval results.
+ClawClass owns all simulation definitions and eval results.
 FlowWink (and any other SaaS) is the target — the "claws" ClawThree operates.
 
 ## Structure
@@ -56,7 +56,7 @@ Se `research/2026-04-19-agent-vs-automation-live-proof.md` för live-bevis.
 ## Architecture
 
 ```
-ClawStack (eval owner)
+ClawClass (eval owner)
   dispatch mission → ClawWink /v1/responses
     ClawWink reasons + acts via FlowWink MCP
       findings → FlowWink beta_test_findings

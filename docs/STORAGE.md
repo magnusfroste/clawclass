@@ -1,6 +1,6 @@
 # Storage configuration
 
-By default, ClawStack stores OpenClaw instance data in `./instances/` on the system disk. For larger deployments or when system disk space is limited, you can point to a separate mounted volume.
+By default, ClawClass stores OpenClaw instance data in `./instances/` on the system disk. For larger deployments or when system disk space is limited, you can point to a separate mounted volume.
 
 ## Default setup (system disk)
 
@@ -38,7 +38,7 @@ docker volume create clawstack-instances
 
 If you start on system disk and later need to move to a separate volume:
 
-1. **Stop ClawStack:**
+1. **Stop ClawClass:**
    ```bash
    docker compose down
    ```
