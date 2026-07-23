@@ -35,6 +35,10 @@ Open `https://clawclass.yourdomain.com` — create your first agent in 30 second
 | **Multi-tenant isolation** | Each agent gets its own domain, container, and memory — fully isolated |
 | **A2A peering** | Enable agent-to-agent communication with one checkbox |
 | **Browser terminal** | Exec into any agent container from the portal UI |
+| **Live log streaming** | WebSocket-based real-time logs — no polling, instant feedback |
+| **Instance sorting** | Sort agents by name, status, role, or creation date |
+| **Keyboard navigation** | Arrow keys to switch tabs, full ARIA accessibility |
+| **Batch operations** | Efficient status polling for dozens of instances |
 
 ## Connect to FlowWink
 
