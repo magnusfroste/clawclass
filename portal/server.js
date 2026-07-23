@@ -38,8 +38,13 @@ require('./routes/instances').register(app);
 require('./routes/bridge').register(app);
 
 // ── SPA / index.html (admin portal) ──────────────────────────────────────────
+let _portalHtml = null;
+function getPortalHtml() {
+  if (!_portalHtml) _portalHtml = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  return _portalHtml;
+}
 function servePortal(req, res) {
-  const html = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+  const html = getPortalHtml();
   const creds = Buffer.from(`${ADMIN_USER}:${ADMIN_PASS}`).toString('base64');
   res.send(html.replace('%%AUTH%%', JSON.stringify(`Basic ${creds}`)));
 }

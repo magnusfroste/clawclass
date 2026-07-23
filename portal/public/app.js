@@ -197,7 +197,7 @@ async function api(method, url, body) {
 }
 
 function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ── Copy token ──
@@ -223,10 +223,11 @@ async function rowAction(name, action) {
 
 // ── Status polling ──
 async function pollStatus() {
-  document.querySelectorAll('[id^="badge-"]').forEach(async el => {
-    const name = el.id.slice(6);
-    const d = await api('GET', '/api/instances/' + name + '/status').catch(() => ({}));
-    if (d.status) { el.textContent = d.status; el.className = 'badge ' + (d.status || 'error'); }
+  const results = await api('GET', '/api/instances/status').catch(() => []);
+  if (!Array.isArray(results)) return;
+  results.forEach(r => {
+    const badge = document.getElementById('badge-' + r.name);
+    if (badge) { badge.textContent = r.status; badge.className = 'badge ' + (r.status || 'error'); }
   });
 }
 setInterval(pollStatus, 15000);

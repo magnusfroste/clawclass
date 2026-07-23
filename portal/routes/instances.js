@@ -466,6 +466,23 @@ function register(app) {
     proxyReq.end();
   });
 
+  // ── Batch status ──
+  app.get('/api/instances/status', requireAdmin, async (req, res) => {
+    const rows = db.prepare('SELECT name, container_name FROM instances').all();
+    const results = await Promise.all(rows.map(async row => {
+      try {
+        const info   = await docker.getContainer(row.container_name).inspect();
+        const status = info.State.Running ? 'running' : (info.State.Status || 'stopped');
+        db.prepare('UPDATE instances SET status = ? WHERE name = ?').run(status, row.name);
+        return { name: row.name, status };
+      } catch {
+        db.prepare('UPDATE instances SET status = ? WHERE name = ?').run('error', row.name);
+        return { name: row.name, status: 'error' };
+      }
+    }));
+    res.json(results);
+  });
+
   // ── Status ──
   app.get('/api/instances/:name/status', requireAdmin, async (req, res) => {
     const row = db.prepare('SELECT container_name FROM instances WHERE name = ?').get(req.params.name);
