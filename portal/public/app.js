@@ -35,6 +35,10 @@ async function init() {
   // Default model
   if (d.modelPresets?.openrouter) document.getElementById('model').value = d.modelPresets.openrouter;
 
+  // Restore sort order
+  const sortEl = document.getElementById('inst-sort');
+  if (sortEl) sortEl.value = __sortOrder;
+
   // Load instances list
   await loadInstances();
 
@@ -56,6 +60,7 @@ async function init() {
 
 let __cachedInstances = [];
 let newFormOpen = false, newFormInitialized = false;
+let __sortOrder = localStorage.getItem('inst_sort') || 'newest';
 
 const ROLE_EMOJI = { flowwink: '🦞', qa: '🔍', seo: '📈', dev: '🛠️', support: '💬', research: '🔬', generalist: '🤖' };
 const ROLE_COLOR = { flowwink: 'var(--blue)', qa: 'var(--amber)', seo: 'var(--green)', dev: 'var(--blue-dim)', support: 'var(--green)', research: 'var(--amber)' };
@@ -73,19 +78,73 @@ function toggleNewForm() {
   document.getElementById('new-inst-toggle').textContent = newFormOpen ? '▾ Collapse' : '+ New';
 }
 
+async function createInstance(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('create-btn');
+  const origText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Creating…';
+
+  const fd = new FormData(form);
+  const body = {};
+  fd.forEach((v, k) => { body[k] = k === 'enableA2A' || k === 'allowAll' ? !!v : v; });
+
+  try {
+    const d = await api('POST', '/api/instances', body);
+    if (d.error) {
+      toast('Error: ' + d.error, 'error');
+    } else {
+      toast('Instance ' + body.name + ' created', 'success');
+      form.reset();
+      onRoleChange(document.getElementById('role'));
+      onProviderChange(document.getElementById('provider'));
+      document.getElementById('cname-notice').style.display = 'none';
+      await loadInstances();
+    }
+  } catch (err) {
+    toast('Network error: ' + err.message, 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = origText;
+  return false;
+}
+
 function filterInstances() {
   const q = (document.getElementById('inst-search').value || '').toLowerCase().trim();
-  renderInstanceCards(q ? __cachedInstances.filter(i =>
+  const filtered = q ? __cachedInstances.filter(i =>
     i.name.toLowerCase().includes(q) ||
     i.domain.toLowerCase().includes(q) ||
     (i.liveModel || '').toLowerCase().includes(q) ||
     (i.provider || '').toLowerCase().includes(q)
-  ) : __cachedInstances);
+  ) : [...__cachedInstances];
+  sortInstances(filtered);
+  renderInstanceCards(filtered, q);
 }
 
-function renderInstanceCards(instances) {
+function sortInstances(arr) {
+  const s = __sortOrder;
+  arr.sort((a, b) => {
+    if (s === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+    if (s === 'name') return a.name.localeCompare(b.name);
+    if (s === 'name-desc') return b.name.localeCompare(a.name);
+    if (s === 'status') {
+      const order = { running: 0, starting: 1, stopped: 2, error: 3 };
+      return (order[a.status] ?? 4) - (order[b.status] ?? 4) || b.name.localeCompare(a.name);
+    }
+    if (s === 'role') return (a.role || 'generalist').localeCompare(b.role || 'generalist') || a.name.localeCompare(b.name);
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
+}
+
+function onSortChange(value) {
+  __sortOrder = value;
+  localStorage.setItem('inst_sort', value);
+  filterInstances();
+}
+
+function renderInstanceCards(instances, q) {
   const list = document.getElementById('instances-list');
-  const q = document.getElementById('inst-search').value.trim();
   if (!instances.length) {
     list.innerHTML = `<div class="empty">${q ? 'No instances match "' + esc(q) + '"' : 'No agents deployed yet. Create one above.'}</div>`;
     return;

@@ -38,7 +38,7 @@
       <button class="btn ghost sm" id="new-inst-toggle" onclick="toggleNewForm()">▾ Collapse</button>
     </div>
     <div class="card" id="new-inst-card">
-      <form method="post" action="/admin/instances">
+      <form id="create-form" onsubmit="return createInstance(event)">
         <div class="form-grid">
           <div class="field full">
             <label>Role</label>
@@ -77,7 +77,7 @@
                 Autonomous mode
               </label>
             </div>
-            <button type="submit" class="btn primary">Create instance</button>
+            <button type="submit" class="btn primary" id="create-btn">Create instance</button>
           </div>
         </div>
       </form>
@@ -88,6 +88,14 @@
     <div class="section-head">
       <span class="section-title">Instances</span>
       <span style="font-size:0.72rem;color:var(--text3)" id="instances-count"></span>
+      <select id="inst-sort" onchange="onSortChange(this.value)" style="width:auto;padding:4px 8px;font-size:0.72rem;background:var(--surface);border:1px solid var(--border);color:var(--text2);border-radius:4px;cursor:pointer">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="name">Name A–Z</option>
+        <option value="name-desc">Name Z–A</option>
+        <option value="status">Status</option>
+        <option value="role">Role</option>
+      </select>
       <div id="inst-search-wrap" style="margin-left:auto">
         <span id="inst-search-icon">⌕</span>
         <input id="inst-search" placeholder="Filter…" oninput="filterInstances()" autocomplete="off" spellcheck="false">
