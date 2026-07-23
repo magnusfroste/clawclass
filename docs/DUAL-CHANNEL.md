@@ -89,7 +89,7 @@ For short, scoped tasks with a clear contract, OpenResponses is simpler and more
 
 ## Confirmed working
 
-Tested 2026-03-28 against clawone (froste.eu) ↔ FlowWink/FlowPilot:
+Tested 2026-03-28 against a ClawClass instance ↔ FlowWink/FlowPilot:
 
 | Channel | Tests | Avg response |
 |---|---|---|

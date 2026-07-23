@@ -86,5 +86,3 @@ ClawClass is open source and community-driven. We want it to become *the* Docker
 ## License
 
 MIT
-
-*Built by [Magnus Froste](https://www.froste.eu).*
