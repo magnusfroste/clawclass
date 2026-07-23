@@ -300,6 +300,15 @@ function register(app) {
     } catch (e) { res.status(500).json({ error: e.message }); }
   });
 
+  // ── Logs token for WebSocket streaming ──
+  app.post('/api/instances/:name/logs/token', requireAdmin, async (req, res) => {
+    const row = db.prepare('SELECT container_name FROM instances WHERE name = ?').get(req.params.name);
+    if (!row) return res.status(404).json({ error: 'not found' });
+    const { createLogToken } = require('../lib/terminal');
+    const token = createLogToken(row.container_name);
+    res.json({ token });
+  });
+
   // ── Logs ──
   app.get('/api/instances/:name/logs', requireAdmin, async (req, res) => {
     const row = db.prepare('SELECT container_name FROM instances WHERE name = ?').get(req.params.name);

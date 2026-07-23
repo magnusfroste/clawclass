@@ -233,7 +233,7 @@
 </div><!-- /page -->
 
 <!-- ══ Manager Modal ══ -->
-<div id="mgr">
+<div id="mgr" role="dialog" aria-modal="true" aria-label="Instance manager">
   <div id="mgr-bar">
     <button class="back" onclick="closeMgr()">← Back</button>
     <span class="inst-label" id="mgr-title"></span>
@@ -247,15 +247,15 @@
       <span id="mgr-action-status"></span>
     </div>
   </div>
-  <div id="mgr-tabs">
-    <div class="tab active" id="tab-files"    onclick="switchTab('files')">Files</div>
-    <div class="tab"        id="tab-logs"     onclick="switchTab('logs')">Logs</div>
-    <div class="tab"        id="tab-chat"     onclick="switchTab('chat')">Chat</div>
-    <div class="tab"        id="tab-model"    onclick="switchTab('model')">Model</div>
-    <div class="tab"        id="tab-cli"      onclick="switchTab('cli')">CLI</div>
-    <div class="tab tab-danger" id="tab-exec" onclick="switchTab('exec')">Exec (root)</div>
-    <div class="tab"        id="tab-terminal" onclick="switchTab('terminal')">Terminal</div>
-    <div class="tab"        id="tab-version"  onclick="switchTab('version')">Version</div>
+  <div id="mgr-tabs" role="tablist" aria-label="Instance tabs">
+    <div class="tab active" id="tab-files"    role="tab" aria-selected="true"  tabindex="0" onclick="switchTab('files')">Files</div>
+    <div class="tab"        id="tab-logs"     role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('logs')">Logs</div>
+    <div class="tab"        id="tab-chat"     role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('chat')">Chat</div>
+    <div class="tab"        id="tab-model"    role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('model')">Model</div>
+    <div class="tab"        id="tab-cli"      role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('cli')">CLI</div>
+    <div class="tab tab-danger" id="tab-exec" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('exec')">Exec (root)</div>
+    <div class="tab"        id="tab-terminal" role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('terminal')">Terminal</div>
+    <div class="tab"        id="tab-version"  role="tab" aria-selected="false" tabindex="-1" onclick="switchTab('version')">Version</div>
   </div>
   <div id="mgr-body">
     <div id="mgr-tree"></div>
@@ -394,10 +394,10 @@
 </div><!-- /mgr -->
 
 <!-- ══ Delete confirmation modal ══ -->
-<div id="del-modal">
+<div id="del-modal" role="dialog" aria-modal="true" aria-labelledby="del-modal-title">
   <div class="del-box">
     <div class="del-crystal">⬡</div>
-    <div class="del-title">Delete instance</div>
+    <div class="del-title" id="del-modal-title">Delete instance</div>
     <div class="del-msg">This will permanently remove <strong id="del-modal-name"></strong> and all its data. This cannot be undone.</div>
     <div class="del-hint">Type the instance name to confirm</div>
     <input id="del-confirm-input" class="del-input" placeholder="instance name" autocomplete="off" spellcheck="false"

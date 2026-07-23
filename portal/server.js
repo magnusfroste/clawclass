@@ -76,6 +76,22 @@ server.on('upgrade', (req, socket, head) => {
     return;
   }
 
+  // Log streaming WebSocket
+  if (url.pathname === '/ws/logs') {
+    const token = url.searchParams.get('token');
+    const entry = tokenStore.get(token);
+    if (!entry || entry.type !== 'logs' || entry.expires < Date.now()) {
+      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+      socket.destroy();
+      return;
+    }
+    tokenStore.delete(token);
+    wss.handleUpgrade(req, socket, head, ws => {
+      wss.emit('connection', ws, entry);
+    });
+    return;
+  }
+
   // WebSocket proxy for OpenClaw instances
   if (BASE_DOMAIN && host !== BASE_DOMAIN) {
     const row = db.prepare('SELECT container_name FROM instances WHERE domain = ?').get(host);

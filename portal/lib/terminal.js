@@ -13,14 +13,24 @@ setInterval(() => {
 
 function createTerminalToken(container, user, cols, rows) {
   const token = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(token, { container, user, cols: cols || 220, rows: rows || 50, expires: Date.now() + 30_000 });
+  tokenStore.set(token, { type: 'terminal', container, user, cols: cols || 220, rows: rows || 50, expires: Date.now() + 30_000 });
+  return token;
+}
+
+function createLogToken(container) {
+  const token = crypto.randomBytes(16).toString('hex');
+  tokenStore.set(token, { type: 'logs', container, expires: Date.now() + 30_000 });
   return token;
 }
 
 function createWss() {
   const wss = new WebSocketServer({ noServer: true });
 
-  wss.on('connection', async (ws, { container, user, cols, rows }) => {
+  wss.on('connection', async (ws, entry) => {
+    if (entry.type === 'logs') {
+      return handleLogStream(ws, entry.container);
+    }
+    const { container, user, cols, rows } = entry;
     let execStream;
     let execInstance;
 
@@ -85,4 +95,48 @@ function createWss() {
   return wss;
 }
 
-module.exports = { createWss, createTerminalToken, tokenStore };
+async function handleLogStream(ws, containerName) {
+  try {
+    const container = docker.getContainer(containerName);
+    const stream = await container.logs({
+      follow: true,
+      stdout: true,
+      stderr: true,
+      tail: 100,
+      timestamps: true,
+    });
+
+    stream.on('data', chunk => {
+      if (ws.readyState === 1) {
+        // Parse Docker log stream format (8-byte header)
+        let offset = 0;
+        while (offset + 8 <= chunk.length) {
+          const size = chunk.readUInt32BE(offset + 4);
+          offset += 8;
+          if (offset + size > chunk.length) break;
+          const line = chunk.slice(offset, offset + size).toString('utf8');
+          ws.send(JSON.stringify({ type: 'log', data: line }));
+          offset += size;
+        }
+      }
+    });
+
+    stream.on('end', () => {
+      if (ws.readyState === 1) ws.close(1000, 'Container stopped');
+    });
+
+    stream.on('error', err => {
+      if (ws.readyState === 1) ws.close(1011, err.message.slice(0, 123));
+    });
+
+    ws.on('close', () => {
+      try { stream.destroy(); } catch {}
+    });
+
+  } catch (e) {
+    console.error('[logs] error:', e.message);
+    if (ws.readyState === 1) ws.close(1011, e.message.slice(0, 123));
+  }
+}
+
+module.exports = { createWss, createTerminalToken, createLogToken, tokenStore };

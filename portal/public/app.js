@@ -372,6 +372,7 @@ function closeMgr(pushUrl = true) {
   if (mgrDirty && !confirm('You have unsaved changes. Close anyway?')) return;
   mgrDirty = false;
   clearInterval(logsTimer); logsTimer = null;
+  disconnectLogsWs();
   mgrCloseTerminal();
   document.getElementById('mgr').classList.remove('open');
   mgrName = null;
@@ -400,11 +401,14 @@ function switchTab(tab) {
     mgrDirty = false;
   }
   clearInterval(logsTimer); logsTimer = null;
+  disconnectLogsWs();
   document.getElementById('logs-filter-bar').style.display = 'none';
   mgrTab = tab;
-  ['files','logs','cli','exec','terminal','version','model','chat'].forEach(t =>
-    document.getElementById('tab-' + t).className = 'tab' + (tab === t ? ' active' : '')
-  );
+  ['files','logs','cli','exec','terminal','version','model','chat'].forEach(t => {
+    const tabEl = document.getElementById('tab-' + t);
+    tabEl.className = 'tab' + (tab === t ? ' active' : '') + (t === 'exec' ? ' tab-danger' : '');
+    tabEl.setAttribute('aria-selected', tab === t ? 'true' : 'false');
+  });
   document.getElementById('mgr-editor').style.display        = tab === 'files'    ? ''      : 'none';
   document.getElementById('mgr-logs').style.display          = tab === 'logs'     ? 'block' : 'none';
   document.getElementById('mgr-cli').style.display           = tab === 'cli'      ? 'flex'  : 'none';
@@ -424,10 +428,9 @@ function switchTab(tab) {
     if (!document.getElementById('mgr-tree').children.length) loadTree('');
     document.getElementById('mgr-crumb').textContent = mgrPath || 'Select a file';
   } else if (tab === 'logs') {
-    document.getElementById('mgr-crumb').textContent = 'Container logs (last 300 lines)';
+    document.getElementById('mgr-crumb').textContent = 'Container logs (live)';
     document.getElementById('logs-filter-bar').style.display = '';
-    loadLogs();
-    logsTimer = setInterval(loadLogs, 5000);
+    connectLogsWs();
   } else if (tab === 'cli') {
     document.getElementById('mgr-crumb').textContent = 'OpenClaw CLI (node user)';
     setTimeout(() => document.getElementById('cli-cmd').focus(), 50);
@@ -743,14 +746,57 @@ async function copyLogs() {
   setTimeout(() => btn.textContent = '⎘ Copy', 2000);
 }
 
-async function loadLogs() {
+// ── Logs (WebSocket streaming) ──
+let logsWs = null;
+
+async function connectLogsWs() {
+  if (logsWs) {
+    logsWs.close();
+    logsWs = null;
+  }
+
   const el = document.getElementById('mgr-logs');
-  const atBottom = !el.textContent || el.scrollHeight - el.scrollTop - el.clientHeight < 60;
-  const d = await api('GET', '/api/instances/' + mgrName + '/logs');
-  const raw = d.error ? ('Error: ' + d.error) : (d.logs || '(no logs)');
-  el.dataset.raw = raw;
-  filterLogs();
-  if (atBottom) el.scrollTop = el.scrollHeight;
+  el.textContent = 'Connecting…\n';
+
+  try {
+    const d = await api('POST', '/api/instances/' + mgrName + '/logs/token');
+    if (d.error) {
+      el.textContent = 'Error: ' + d.error;
+      return;
+    }
+
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    logsWs = new WebSocket(`${proto}//${location.host}/ws/logs?token=${d.token}`);
+
+    logsWs.onmessage = e => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'log') {
+          const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+          el.textContent += msg.data;
+          if (atBottom) el.scrollTop = el.scrollHeight;
+          el.dataset.raw = el.textContent;
+        }
+      } catch {}
+    };
+
+    logsWs.onclose = () => {
+      el.textContent += '\n[Connection closed]';
+    };
+
+    logsWs.onerror = () => {
+      el.textContent = '[WebSocket error]';
+    };
+  } catch (err) {
+    el.textContent = 'Error: ' + err.message;
+  }
+}
+
+function disconnectLogsWs() {
+  if (logsWs) {
+    logsWs.close();
+    logsWs = null;
+  }
 }
 
 function filterLogs() {
@@ -1187,6 +1233,18 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('mgr').classList.contains('open') && !e.target.closest('input, textarea, select')) {
     closeMgr();
   }
+});
+
+// ── Tab keyboard navigation ──
+document.getElementById('mgr-tabs').addEventListener('keydown', e => {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  e.preventDefault();
+  const tabs = ['files','logs','chat','model','cli','exec','terminal','version'];
+  const idx = tabs.indexOf(mgrTab);
+  const next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+  const tabEl = document.getElementById('tab-' + tabs[next]);
+  tabEl.focus();
+  switchTab(tabs[next]);
 });
 
 // ── Toast ──
