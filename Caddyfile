@@ -1,5 +1,5 @@
 {
-    email magnus@froste.eu
+    email {$CADDY_EMAIL}
     on_demand_tls {
         ask http://portal:3000/api/verify-domain
     }
@@ -16,6 +16,6 @@
     reverse_proxy portal:3000
 }
 
-clawstack.froste.eu {
+{$BASE_DOMAIN} {
     reverse_proxy portal:3000
 }
